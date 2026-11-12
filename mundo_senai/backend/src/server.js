@@ -19,5 +19,10 @@ app.use((err, _req, res, _next) => {
   const status = err.status || (err.code === "23505" ? 409 : err.code === "23502" || err.code === "22P02" ? 400 : 500);
   res.status(status).json({ erro: status === 500 ? "Erro interno do servidor." : err.message });
 });
-const server = app.listen(port, () => console.log(`API disponível em http://localhost:${port}`));
-process.on("SIGINT", async () => { server.close(); await knex.destroy(); process.exit(0); });
+export default app;
+
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`API disponível em http://localhost:${port}`);
+  });
+}
